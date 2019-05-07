@@ -12,8 +12,14 @@ data "vsphere_compute_cluster" "cluster" {
   datacenter_id = "${data.vsphere_datacenter.dc.id}"
 }
 
+# Define NIC Card of VM
 data "vsphere_network" "network01" {
   name          = "mgmt-vlan11"
+  datacenter_id = "${data.vsphere_datacenter.dc.id}"
+}
+
+data "vsphere_network" "network02" {
+  name          = "mgmt-vlan12"
   datacenter_id = "${data.vsphere_datacenter.dc.id}"
 }
 
@@ -37,6 +43,12 @@ resource "vsphere_virtual_machine" "vm" {
     network_id   = "${data.vsphere_network.network01.id}"
     adapter_type = "${data.vsphere_virtual_machine.template.network_interface_types[0]}"
   }
+
+  network_interface {
+    network_id   = "${data.vsphere_network.network02.id}"
+    adapter_type = "${data.vsphere_virtual_machine.template.network_interface_types[0]}"
+  }
+
 
   disk {
     label            = "disk0"
