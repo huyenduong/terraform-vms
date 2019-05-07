@@ -57,7 +57,25 @@ resource "vsphere_virtual_machine" "vm" {
     thin_provisioned = "${data.vsphere_virtual_machine.template.disks.0.thin_provisioned}"
   }
 
-  clone { template_uuid = "${data.vsphere_virtual_machine.template.id}"
+  clone { 
+    template_uuid = "${data.vsphere_virtual_machine.template.id}"
+    linked_clone = true
+    customize {
+      linux_options {
+        host_name = "terra-web01"
+        domain = "ninjago.local"
+      }
+
+      network_interface {
+        ipv4_address = "192.168.11.250"
+        ipv4_netmask = "24"
+      }
+
+      # declare second interface for DHCP
+      network_interface {}
+
+    }
   }
+  
 }
 
