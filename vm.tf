@@ -39,6 +39,8 @@ resource "vsphere_virtual_machine" "vm" {
 
   scsi_type = "${data.vsphere_virtual_machine.template.scsi_type}"
 
+  wait_for_guest_net_timeout = 0
+
   network_interface {
     network_id   = "${data.vsphere_network.network01.id}"
     adapter_type = "${data.vsphere_virtual_machine.template.network_interface_types[0]}"
@@ -46,7 +48,7 @@ resource "vsphere_virtual_machine" "vm" {
 
   network_interface {
     network_id   = "${data.vsphere_network.network02.id}"
-    adapter_type = "${data.vsphere_virtual_machine.template.network_interface_types[0]}"
+    adapter_type = "${data.vsphere_virtual_machine.template.network_interface_types[1]}"
   }
 
 
@@ -72,7 +74,10 @@ resource "vsphere_virtual_machine" "vm" {
       }
 
       # declare second interface for DHCP
-      network_interface {}
+      network_interface {
+        ipv4_address = "1.1.1.1"
+        ipv4_netmask = "24"
+      }
 
     }
   }
