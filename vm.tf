@@ -29,7 +29,8 @@ data "vsphere_virtual_machine" "template" {
 }
 
 resource "vsphere_virtual_machine" "vm" {
-  name             = "terraform-web"
+  count = 20
+  name             = "terraform-vm-${count.index + 1}"
   resource_pool_id = "${data.vsphere_compute_cluster.cluster.resource_pool_id}"
   datastore_id     = "${data.vsphere_datastore.datastore.id}"
 
@@ -64,18 +65,18 @@ resource "vsphere_virtual_machine" "vm" {
     linked_clone = true
     customize {
       linux_options {
-        host_name = "terra-web01"
+        host_name = "terraform-vm-${count.index + 1}"
         domain = "ninjago.local"
       }
 
       network_interface {
-        ipv4_address = "192.168.11.250"
+        ipv4_address= "192.168.11.${201 + count.index}"
         ipv4_netmask = "24"
       }
 
       # declare second interface for DHCP
       network_interface {
-        ipv4_address = "1.1.1.1"
+        ipv4_address= "1.1.1.${201 + count.index}"
         ipv4_netmask = "24"
       }
 
